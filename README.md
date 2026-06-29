@@ -61,21 +61,19 @@ Below are the screenshots detailing the code implementation and execution result
 ### Source Code Pages
 | Page 1 | Page 2 |
 |--- |--- |
-| ![Code Page 1](photos/code/code_page-0001.jpg) | ![Code Page 2](photos/code/code_page-0002.jpg) |
+| ![Code Page 1](project/photos/code/code_page-0001.jpg) | ![Code Page 2](project/photos/code/code_page-0002.jpg) |
 
 | Page 3 | Page 4 |
 |--- |--- |
-| ![Code Page 3](photos/code/code_page-0003.jpg) | ![Code Page 4](photos/code/code_page-0004.jpg) |
+| ![Code Page 3](project/photos/code/code_page-0003.jpg) | ![Code Page 4](project/photos/code/code_page-0004.jpg) |
 
 | Page 5 |
 |--- |
-| ![Code Page 5](photos/code/code_page-0005.jpg) |
+| ![Code Page 5](project/photos/code/code_page-0005.jpg) |
 
 ### Program Execution & Output
 * **Terminal Output:**
-![Output Page 1](photos/output/output_page-0001.jpg)
-
----
+![Output Page 1](project/photos/output/output_page-0001.jpg)
 
 ## 🚀 How to Run the Project
 
