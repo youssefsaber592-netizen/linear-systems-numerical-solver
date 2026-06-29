@@ -6,10 +6,10 @@ Welcome to the **Numerical Analysis Project** developed for the Numerical Analys
 
 ## 👥 Team Members
 
-* **Mark Nader Kamal Saad** - Code: `12500407`
-* **Omar Eid Mohamed** - Code: `12500187`
-* **Youssef Saber Salama Awad Elian** - Code: `12500327`
-* **Ahmed Hamdy Ahmed Mahdy** - Code: `12500725`
+* **Mark Nader Kamal Saad**  
+* **Omar Eid Mohamed**
+* **Youssef Saber Salama Awad Elian** 
+* **Ahmed Hamdy Ahmed Mahdy**
 
 ---
 
