@@ -1,0 +1,236 @@
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// --- 1. Jacobi Iterative Method ---
+void jacobi(double a[3][3], double b[3], int iterations, double resJacobi[3]) {
+    double x[3] = { 0, 0, 0 };
+    double next_x[3];
+
+    for (int k = 1; k <= iterations; k++) {
+        next_x[0] = (b[0] - (a[0][1] * x[1] + a[0][2] * x[2])) / a[0][0];
+        next_x[1] = (b[1] - (a[1][0] * x[0] + a[1][2] * x[2])) / a[1][1];
+        next_x[2] = (b[2] - (a[2][0] * x[0] + a[2][1] * x[1])) / a[2][2];
+
+        for (int i = 0; i < 3; i++) x[i] = next_x[i];
+    }
+
+    cout << "\n--- Jacobi Method Final Result after " << iterations << " iterations ---" << endl;
+    cout << fixed << setprecision(4);
+    cout << "x1 = " << x[0] << endl;
+    cout << "x2 = " << x[1] << endl;
+    cout << "x3 = " << x[2] << endl;
+
+    for (int i = 0; i < 3; i++) resJacobi[i] = x[i];
+}
+
+// --- 2. Gauss-Seidel Iterative Method ---
+void gaussSeidel(double a[3][3], double b[3], int iterations, double resGauss[3]) {
+    double x[3] = { 0, 0, 0 };
+
+    for (int k = 1; k <= iterations; k++) {
+        x[0] = (b[0] - (a[0][1] * x[1] + a[0][2] * x[2])) / a[0][0];
+        x[1] = (b[1] - (a[1][0] * x[0] + a[1][2] * x[2])) / a[1][1];
+        x[2] = (b[2] - (a[2][0] * x[0] + a[2][1] * x[1])) / a[2][2];
+    }
+
+    cout << "\n---------------------------------------------------------------------" << endl;
+    cout << "--- Gauss-Seidel Method Final Result after " << iterations << " iterations ---" << endl;
+    cout << fixed << setprecision(4);
+    cout << "x1 = " << x[0] << endl;
+    cout << "x2 = " << x[1] << endl;
+    cout << "x3 = " << x[2] << endl;
+    cout << "---------------------------------------------------------------------" << endl;
+
+    for (int i = 0; i < 3; i++) resGauss[i] = x[i];
+}
+
+// Helper function to calculate the determinant of a 3x3 matrix
+double calculateDeterminant(double m[3][3]) {
+    return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+           m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+           m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+}
+
+// --- 3. Cramer's Rule (Direct Method) ---
+void solveCramer(double a[3][3], double b[3]) {
+    double temp[3][3];
+    double D, D1, D2, D3;
+
+    // 1. Calculate main determinant (D)
+    D = calculateDeterminant(a);
+    if (D == 0) {
+        cout << "\n[Cramer Error]: The system has no unique solution (D=0)." << endl;
+        return;
+    }
+
+    // 2. Calculate D1 (Replace 1st column with B)
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) temp[i][j] = a[i][j];
+        temp[i][0] = b[i];
+    }
+    D1 = calculateDeterminant(temp);
+
+    // 3. Calculate D2 (Replace 2nd column with B)
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) temp[i][j] = a[i][j];
+        temp[i][1] = b[i];
+    }
+    D2 = calculateDeterminant(temp);
+
+    // 4. Calculate D3 (Replace 3rd column with B)
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) temp[i][j] = a[i][j];
+        temp[i][2] = b[i];
+    }
+    D3 = calculateDeterminant(temp);
+
+    // Print Results
+    cout << "\n--- Cramer's Rule Results ---" << endl;
+    cout << fixed << setprecision(4);
+    cout << "x1 = " << D1 / D << endl;
+    cout << "x2 = " << D2 / D << endl;
+    cout << "x3 = " << D3 / D << endl;
+    cout << "---------------------------------------------------------------------" << endl;
+}
+
+// --- 4. Matrix Inversion Method (Direct Method) ---
+void solveMatrix(double a[3][3], double b[3], double resMatrix[3]) {
+    int n = 3;
+    double matrix[3][6]; // Augmented matrix [A|I]
+
+    // 1. Building the Augmented Matrix [A|I]
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            matrix[i][j] = a[i][j];
+        }
+        for (int j = n; j < 2 * n; j++) {
+            if (j == (i + n)) matrix[i][j] = 1.0;
+            else matrix[i][j] = 0.0;
+        }
+    }
+
+    // 2. Gauss-Jordan Elimination
+    for (int i = 0; i < n; i++) {
+        double pivot = matrix[i][i];
+        if (abs(pivot) < 1e-9) {
+            cout << "\n[Matrix Error]: Zero pivot encountered. Matrix inversion failed." << endl;
+            return;
+        }
+
+        // Pivot normalization
+        for (int j = 0; j < 2 * n; j++) {
+            matrix[i][j] /= pivot;
+        }
+
+        // Eliminate other entries in the column
+        for (int k = 0; k < n; k++) {
+            if (k != i) {
+                double factor = matrix[k][i];
+                for (int j = 0; j < 2 * n; j++) {
+                    matrix[k][j] -= factor * matrix[i][j];
+                }
+            }
+        }
+    }
+
+    // 3. Finding X by multiplying A^-1 * B
+    double x[3] = { 0, 0, 0 };
+    cout << "\n--- Matrix Method (Matrix Inversion) ---" << endl;
+    cout << fixed << setprecision(4);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            x[i] += matrix[i][j + n] * b[j]; 
+        }
+        cout << "x" << i + 1 << " = " << x[i] << endl;
+        resMatrix[i] = x[i];
+    }
+}
+
+// --- 5. Error Analysis & Comparison Functions ---
+void printErrorAnalysis(string method, double exact[3], double approx[3]) {
+    cout << "\n>>> Error Analysis for " << method << ":" << endl;
+    cout << "Var | Abs Error | Rel Error %" << endl;
+    cout << "---------------------------------" << endl;
+    for (int i = 0; i < 3; i++) {
+        double absErr = abs(exact[i] - approx[i]);
+        double relErr = 0.0;
+        
+        if (abs(exact[i]) > 1e-9) {
+            relErr = (absErr / abs(exact[i])) * 100;
+        }
+
+        cout << "x" << i + 1 << " | " << setw(10) << fixed << setprecision(4) << absErr
+             << " | " << setw(8) << setprecision(2) << relErr << "%" << endl;
+    }
+}
+
+double getAverageRelError(double exact[3], double approx[3]) {
+    double totalRelErr = 0;
+    int validCounts = 0;
+
+    for (int i = 0; i < 3; i++) {
+        double absErr = abs(exact[i] - approx[i]);
+        if (abs(exact[i]) > 1e-9) {
+            totalRelErr += (absErr / abs(exact[i])) * 100;
+            validCounts++;
+        }
+    }
+    return (validCounts > 0) ? (totalRelErr / validCounts) : 0.0;
+}
+
+void compareMethods(double exact[3], double resJacobi[3], double resGauss[3]) {
+    double avgErrJacobi = getAverageRelError(exact, resJacobi);
+    double avgErrGauss = getAverageRelError(exact, resGauss);
+
+    cout << "\n====================== CONCLUSION ======================" << endl;
+    cout << fixed << setprecision(4);
+    cout << "Avg Relative Error (Jacobi)       : " << avgErrJacobi << " %" << endl;
+    cout << "Avg Relative Error (Gauss-Seidel) : " << avgErrGauss << " %" << endl;
+    cout << "--------------------------------------------------------" << endl;
+
+    if (abs(avgErrJacobi - avgErrGauss) < 1e-7) {
+        cout << "=> Result: Both methods are EQUALLY accurate." << endl;
+    }
+    else if (avgErrGauss < avgErrJacobi) {
+        cout << "=> Result: GAUSS-SEIDEL is BETTER (More accurate / Faster convergence)." << endl;
+    }
+    else {
+        cout << "=> Result: JACOBI is BETTER (Lower error)." << endl;
+    }
+    cout << "========================================================" << endl;
+}
+
+// --- Main Execution Block ---
+int main() {
+    double a[3][3] = { {8, 2, -3}, {-1, -10, 4}, {2, 3, 9} };
+    double b[3] = { 21, 13, -15 };
+    double resJacobi[3], resGauss[3], resMatrix[3];
+    int iters;
+
+    cout << "Enter number of iterations: ";
+    cin >> iters;
+
+    if (iters <= 0) {
+        cout << "Invalid number of iterations. Exiting..." << endl;
+        return 1;
+    }
+
+    // Run Methods
+    jacobi(a, b, iters, resJacobi);
+    gaussSeidel(a, b, iters, resGauss);
+    solveCramer(a, b);
+    solveMatrix(a, b, resMatrix);
+
+    // Error Evaluation Summary
+    cout << "\n================ ERROR ANALYSIS SUMMARY ================" << endl;
+    printErrorAnalysis("Jacobi", resMatrix, resJacobi);
+    printErrorAnalysis("Gauss-Seidel", resMatrix, resGauss);
+    compareMethods(resMatrix, resJacobi, resGauss);
+
+    return 0;
+}
